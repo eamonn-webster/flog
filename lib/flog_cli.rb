@@ -29,6 +29,42 @@ class FlogCLI
     }.flatten.sort
   end
 
+  # so I can move this to flog wholesale
+  DEFAULT_IGNORE = ".flogignore" # :nodoc:
+
+  ##
+  # A file filter mechanism similar to, but not as extensive as,
+  # .gitignore files:
+  #
+  # + If a pattern does not contain a slash, it is treated as a shell glob.
+  # + If a pattern ends in a slash, it matches on directories (and contents).
+  # + Otherwise, it matches on relative paths.
+  #
+  # File.fnmatch is used throughout, so glob patterns work for all 3 types.
+
+  def self.filter_files files, ignore = DEFAULT_IGNORE
+    ignore_paths = if ignore.respond_to? :read then
+                     ignore.read
+                   elsif File.exists? ignore then
+                     File.read ignore
+                   end
+
+    if ignore_paths then
+      nonglobs, globs = ignore_paths.split("\n").partition { |p| p.include? "/" }
+      dirs, ifiles    = nonglobs.partition { |p| p.end_with? "/" }
+      dirs            = dirs.map { |s| s.chomp "/" }
+
+      only_paths = File::FNM_PATHNAME
+      files = files.reject { |f|
+        dirs.any?     { |i| File.fnmatch?(i, File.dirname(f), only_paths) } ||
+            globs.any?  { |i| File.fnmatch?(i, f) } ||
+            ifiles.any? { |i| File.fnmatch?(i, f, only_paths) }
+      }
+    end
+
+    files
+  end
+
   ##
   # Loads all flog plugins. Files must be named "flog/*.rb".
 
@@ -161,7 +197,7 @@ class FlogCLI
   # errors, and traversing subdirectories intelligently.
 
   def flog(*files_or_dirs)
-    files = FlogCLI.expand_dirs_to_files(*files_or_dirs)
+    files = FlogCLI.filter_files FlogCLI.expand_dirs_to_files(*files_or_dirs)
     @flog.flog(*files)
   end
 
