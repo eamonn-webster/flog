@@ -12,13 +12,6 @@ class TestFlogCLI < FlogTest
     @flog = FlogCLI.new :parser => RubyParser
   end
 
-  def test_cls_expand_dirs_to_files
-    expected = %w(lib/flog.rb lib/flog_cli.rb lib/flog_task.rb lib/gauntlet_flog.rb)
-    assert_equal expected, FlogCLI.expand_dirs_to_files('lib')
-    expected = %w(Rakefile)
-    assert_equal expected, FlogCLI.expand_dirs_to_files('Rakefile')
-  end
-
   def test_cls_parse_options
     # defaults
     opts = FlogCLI.parse_options
@@ -92,7 +85,7 @@ class TestFlogCLI < FlogTest
     expected = "\n     1.6: main#none\n"
 
     assert_equal expected, o.string
-    assert_equal 1.6, @flog.totals["main#none"]
+    assert_in_epsilon 1.6, @flog.totals["main#none"]
   end
 
   def test_output_details_grouped
@@ -134,7 +127,7 @@ class TestFlogCLI < FlogTest
 "
 
     assert_equal expected, o.string
-    assert_equal 1.6, @flog.totals["main#none"]
+    assert_in_epsilon 1.6, @flog.totals["main#none"]
   end
 
   def test_report
@@ -165,7 +158,7 @@ class TestFlogCLI < FlogTest
     @flog.option[:all] = true
     @flog.calculate_total_scores
 
-    assert_equal 1.6, @flog.total_score unless @flog.option[:methods]
+    assert_in_epsilon 1.6, @flog.total_score unless @flog.option[:methods]
     assert_equal 3, @flog.mass["-"]
 
     o = StringIO.new

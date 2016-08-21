@@ -11,7 +11,7 @@ class File
 end
 
 class Flog < MethodBasedSexpProcessor
-  VERSION = "4.3.2" # :nodoc:
+  VERSION = "4.4.0" # :nodoc:
 
   ##
   # Cut off point where the report should stop unless --all given.
@@ -166,7 +166,7 @@ class Flog < MethodBasedSexpProcessor
   # Flog the given files. Deals with "-", and syntax errors.
   #
   # Not as smart as FlogCLI's #flog method as it doesn't traverse
-  # dirs. Use FlogCLI.expand_dirs_to_files or see FlogCLI#flog.
+  # dirs. Use PathExpander to expand dirs into files.
 
   def flog(*files)
     files.each do |file|

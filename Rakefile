@@ -8,9 +8,11 @@ Hoe.add_include_dirs("../../ruby_parser/dev/lib",
                      "../../sexp_processor/dev/lib",
                      "../../ZenTest/dev/lib",
                      "../../minitest/dev/lib",
+                     "../../path_expander/dev/lib",
                      "lib")
 
 Hoe.plugin :seattlerb
+Hoe.plugin :rdoc
 
 Hoe.spec 'flog' do
   developer 'Ryan Davis', 'ryand-ruby@zenspider.com'
@@ -20,6 +22,7 @@ Hoe.spec 'flog' do
 
   dependency "sexp_processor", "~> 4.4"
   dependency "ruby_parser",    ["~> 3.1", "> 3.1.0"]
+  dependency "path_expander", "~> 1.0"
 end
 
 task :debug do
