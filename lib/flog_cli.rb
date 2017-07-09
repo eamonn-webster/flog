@@ -26,6 +26,42 @@ class FlogCLI
     flogger.report
   end
 
+  # so I can move this to flog wholesale
+  DEFAULT_IGNORE = ".flogignore" # :nodoc:
+
+  ##
+  # A file filter mechanism similar to, but not as extensive as,
+  # .gitignore files:
+  #
+  # + If a pattern does not contain a slash, it is treated as a shell glob.
+  # + If a pattern ends in a slash, it matches on directories (and contents).
+  # + Otherwise, it matches on relative paths.
+  #
+  # File.fnmatch is used throughout, so glob patterns work for all 3 types.
+
+  def self.filter_files files, ignore = DEFAULT_IGNORE
+    ignore_paths = if ignore.respond_to? :read then
+                     ignore.read
+                   elsif File.exists? ignore then
+                     File.read ignore
+                   end
+
+    if ignore_paths then
+      nonglobs, globs = ignore_paths.split("\n").partition { |p| p.include? "/" }
+      dirs, ifiles    = nonglobs.partition { |p| p.end_with? "/" }
+      dirs            = dirs.map { |s| s.chomp "/" }
+
+      only_paths = File::FNM_PATHNAME
+      files = files.reject { |f|
+        dirs.any?     { |i| File.fnmatch?(i, File.dirname(f), only_paths) } ||
+            globs.any?  { |i| File.fnmatch?(i, f) } ||
+            ifiles.any? { |i| File.fnmatch?(i, f, only_paths) }
+      }
+    end
+
+    files
+  end
+
   ##
   # Loads all flog plugins. Files must be named "flog/*.rb".
 
@@ -68,6 +104,8 @@ class FlogCLI
       :quiet    => false,
       :continue => false,
       :parser   => RubyParser,
+      :score_option => {
+      }
     }
 
     OptionParser.new do |opts|
@@ -128,6 +166,10 @@ class FlogCLI
         option[:verbose] = true
       end
 
+      opts.on("-1", "--define_method_score SCORE", Integer, "Score for define_method.") do |score|
+        option[:score_option][:define_method] = 1
+      end
+
       opts.on("--18", "Use a ruby 1.8 parser.") do
         option[:parser] = Ruby18Parser
       end
@@ -163,6 +205,7 @@ class FlogCLI
   # process dirs into files.
 
   def flog(*files)
+    # files = FlogCLI.filter_files FlogCLI.expand_dirs_to_files(*files)
     files << "-" if files.empty?
     @flog.flog(*files)
   end
@@ -172,6 +215,9 @@ class FlogCLI
 
   def initialize options = {}
     @flog = Flog.new options
+    options[:score_option].each do |k, v|
+      Flog::SCORES[k] = v
+    end
   end
 
   ##
