@@ -527,12 +527,19 @@ class TestFlog < FlogTest
 
   def test_threshold
     test_flog
-    assert_in_epsilon Flog::THRESHOLD * 1.6, @flog.threshold
+    assert_in_epsilon 0.6 * 1.6, @flog.threshold
   end
 
   def test_no_threshold
     @flog.option[:all] = true
     assert_nil @flog.threshold
+  end
+
+  def test_threshold_custom
+    @flog.threshold = 0.33
+
+    test_flog
+    assert_in_epsilon 0.33 * 1.6, @flog.threshold
   end
 
   def test_calculate
@@ -559,7 +566,7 @@ class TestFlog < FlogTest
     @flog.calculate_total_scores
     @flog.calculate
 
-    assert_equal({ 'User#blah' => 'user.rb:3' }, @flog.method_locations)
+    assert_equal({ 'User#blah' => 'user.rb:3-4' }, @flog.method_locations)
     assert_equal({ "User#blah" => 2.2 }, @flog.totals)
     assert_in_epsilon(2.2, @flog.total_score)
     assert_in_epsilon(1.0, @flog.multiplier)
@@ -581,7 +588,7 @@ class TestFlog < FlogTest
     @flog.calculate_total_scores
     @flog.calculate
 
-    assert_equal({ 'Coder#happy?' => 'coder.rb:3' }, @flog.method_locations)
+    assert_equal({ 'Coder#happy?' => 'coder.rb:3-4' }, @flog.method_locations)
     assert_equal({ "Coder#happy?" => 1.0 }, @flog.totals)
     assert_in_epsilon(1.0, @flog.total_score)
     assert_in_epsilon(1.0, @flog.multiplier)

@@ -11,12 +11,14 @@ class File
 end
 
 class Flog < MethodBasedSexpProcessor
-  VERSION = "4.4.0" # :nodoc:
+  VERSION = "4.6.1" # :nodoc:
 
   ##
   # Cut off point where the report should stop unless --all given.
 
-  THRESHOLD = 0.60
+  DEFAULT_THRESHOLD = 0.60
+
+  THRESHOLD = DEFAULT_THRESHOLD # :nodoc:
 
   ##
   # The scoring system hash. Maps node type to score.
@@ -98,6 +100,7 @@ class Flog < MethodBasedSexpProcessor
   attr_reader :calls, :option, :mass
   attr_reader :method_scores, :scores
   attr_reader :total_score, :totals
+  attr_writer :threshold
 
   # :startdoc:
 
@@ -230,9 +233,9 @@ class Flog < MethodBasedSexpProcessor
   def initialize option = {}
     super()
     @option              = option
-    @method_locations    = {}
     @mass                = {}
     @parser              = nil
+    @threshold           = option[:threshold] || DEFAULT_THRESHOLD
     self.auto_shift_type = true
     self.reset
   end
@@ -294,7 +297,7 @@ class Flog < MethodBasedSexpProcessor
   # Final threshold that is used for report
 
   def threshold
-    option[:all] ? nil : total_score * THRESHOLD
+    option[:all] ? nil : total_score * @threshold
   end
 
   ##
@@ -464,7 +467,7 @@ class Flog < MethodBasedSexpProcessor
       if t == :call and r == nil and submsg = dsl_name?(a) then
         m = "#{m}(#{submsg})" if m and [String, Symbol].include?(submsg.class)
         in_klass m do                             # :task/namespace
-          in_method submsg, exp.file, exp.line do # :name
+          in_method submsg, exp.file, exp.line, exp.line_max do # :name
             process_until_empty exp
           end
         end
@@ -483,18 +486,20 @@ class Flog < MethodBasedSexpProcessor
     s()
   end
 
+  Rational = Integer unless defined? Rational # 1.8 / 1.9
+
   def process_lit(exp)
     value = exp.shift
     case value
     when 0, -1 then
       # ignore those because they're used as array indicies instead of
       # first/last
-    when Integer then
+    when Integer, Rational then
       add_to_score :lit_fixnum
     when Float, Symbol, Regexp, Range then
       # do nothing
     else
-      raise value.inspect
+      raise "Unhandled lit: #{value.inspect}:#{value.class}"
     end
     s()
   end

@@ -1,3 +1,30 @@
+=== 4.6.1 / 2017-02-08
+
+* 1 bug fix:
+
+  * Fixed max line number in range report. AKA I'm an idiot.
+
+=== 4.6.0 / 2017-02-01
+
+* 2 minor enhancements:
+
+  * Bumped dependency on sexp_processor to 4.8 and up.
+  * Include new Sexp#line_max info for in_method so DSLs can record line span.
+
+=== 4.5.0 / 2017-01-19
+
+* 3 minor enhancements:
+
+  * Added -t=N and --threshold N processing to FlogCLI.
+  * Added tweakable threshold to Flog (still defaults to 60%).
+  * Renamed Flog::THRESHOLD to Flog::DEFAULT_THRESHOLD (but kept an alias around).
+
+=== 4.4.1 / 2017-01-13
+
+* 1 bug fix:
+
+  * Fixed scoring of Rational lits.
+
 === 4.4.0 / 2016-05-16
 
 * 1 minor enhancement:
