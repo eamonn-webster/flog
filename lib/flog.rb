@@ -63,7 +63,7 @@ class Flog < MethodBasedSexpProcessor
   ##
   # Eval forms
 
-  SCORES.merge!(:define_method => 5,
+  SCORES.merge!(:define_method => 1,
                 :eval          => 5,
                 :module_eval   => 5,
                 :class_eval    => 5,
