@@ -114,6 +114,8 @@ class FlogCLI
       :quiet    => false,
       :continue => false,
       :parser   => nil,
+      :score_option => {
+      }
     }.merge extra_options
 
     OptionParser.new do |opts|
@@ -179,6 +181,10 @@ class FlogCLI
         option[:verbose] = true
       end
 
+      opts.on("-1", "--define_method_score SCORE", Integer, "Score for define_method.") do |score|
+        option[:score_option][:define_method] = 1
+      end
+
       next if self.plugins.empty?
       opts.separator "Plugin options:"
 
@@ -215,6 +221,9 @@ class FlogCLI
 
   def initialize options = {}
     @flog = Flog.new options
+    options[:score_option].each do |k, v|
+      Flog::SCORES[k] = v
+    end
   end
 
   ##
