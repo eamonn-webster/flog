@@ -107,6 +107,8 @@ class FlogCLI
       :quiet    => false,
       :continue => false,
       :parser   => RubyParser,
+      :score_option => {
+      }
     }
 
     OptionParser.new do |opts|
@@ -163,6 +165,10 @@ class FlogCLI
         option[:verbose] = true
       end
 
+      opts.on("-1", "--define_method_score SCORE", Integer, "Score for define_method.") do |score|
+        option[:score_option][:define_method] = 1
+      end
+
       opts.on("--18", "Use a ruby 1.8 parser.") do
         option[:parser] = Ruby18Parser
       end
@@ -206,6 +212,9 @@ class FlogCLI
 
   def initialize options = {}
     @flog = Flog.new options
+    options[:score_option].each do |k, v|
+      Flog::SCORES[k] = v
+    end
   end
 
   ##
