@@ -706,6 +706,38 @@ class TestFlog < FlogTest
     assert_equal(expected, @flog.method_scores)
   end
 
+  def test_ruby_motion_params
+    user_class = %(
+module TableView
+  def tableView(table_view, objectValueForTableColumn: objectValueForTableColumn, row: row)
+    table_view_object_value_for_table_column(table_view, objectValueForTableColumn, row)
+  end
+
+  def tableView(table_view, viewForTableColumn: viewForTableColumn, row: row, x:)
+    view_for_table_view_column_and_row(table_view, viewForTableColumn, row)
+  end
+end
+    )
+    user_file = "table_view.rb"
+
+    @flog.flog_ruby user_class, user_file
+    @flog.calculate_total_scores
+    @flog.calculate
+
+    expected_scores = {
+      'TableView' => [['TableView#tableView', 2.0]]
+    }
+    expected_calls = {
+      'TableView#tableView' => {
+        table_view_object_value_for_table_column: 1.0,
+        view_for_table_view_column_and_row: 1.0
+      }
+    }
+
+    assert_equal(expected_scores, @flog.method_scores)
+    assert_equal(expected_calls, @flog.calls)
+  end
+
   def setup_my_klass
     @flog.class_stack  << "Base" << "MyKlass"
     @flog.method_stack << "mymethod"

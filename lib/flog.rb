@@ -228,8 +228,33 @@ class Flog < MethodBasedSexpProcessor
 
     return unless ast
 
+    ast = rewrite_ruby_motion_kwargs(ast)
     mass[file] = ast.mass
     process ast
+  end
+
+  # looking for
+  # s(:kwarg, :argName, s(:call, nil, :argName))
+  # replace with
+  # s(:kwarg, :argName)
+  #
+
+  def rewrite_ruby_motion_kwargs(expr)
+    if expr.is_a? Sexp
+      if expr[0] == :kwarg &&
+        expr[2].is_a?(Sexp) &&
+        expr[2][0] == :call &&
+        expr[2][1] == nil
+        expr[2][2] == expr[1]
+
+        # remove the second parameter
+        expr.pop
+      end
+
+      # descend into children
+      expr.each { |x| rewrite_ruby_motion_kwargs(x) }
+    end
+    expr
   end
 
   ##
