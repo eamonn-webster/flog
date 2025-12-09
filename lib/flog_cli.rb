@@ -24,7 +24,7 @@ class FlogCLI
     load_plugins
 
     expander = PathExpander.new args, "**/*.{rb,rake}"
-    files = expander.process
+    files = expander.process.to_a
 
     options = parse_options args, extra
 
@@ -77,7 +77,7 @@ class FlogCLI
     option = {
       :quiet    => false,
       :continue => false,
-      :parser   => RubyParser,
+      :parser   => nil,
     }.merge extra_options
 
     OptionParser.new do |opts|
@@ -128,6 +128,11 @@ class FlogCLI
 
       opts.on("-s", "--score", "Display total score only.") do
         option[:score] = true
+      end
+
+      opts.on "--legacy" "Use RubyParser for parsing." do
+        require "ruby_parser"
+        option[:parser] = RubyParser
       end
 
       opts.on("-tN", "--threshold=N", Integer, "Set the report cutoff threshold (def: 60%).") do |n|

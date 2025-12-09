@@ -1,6 +1,12 @@
 require "sexp_processor"
-require "ruby_parser"
+require "prism"
+require "prism/translation/ruby_parser"
 require "timeout"
+
+class Prism::Translation::RubyParser # compatibility layer
+  def process(ruby, file, timeout=nil) =
+    Timeout.timeout(timeout) { parse ruby, file }
+end
 
 ##
 # Flog is a SexpProcessor that calculates a ABC (assignments,
@@ -209,7 +215,7 @@ class Flog < MethodBasedSexpProcessor
   # methods. Does not handle timeouts or syntax errors. See #flog_ruby.
 
   def flog_ruby! ruby, file="-", timeout = 10
-    @parser = (option[:parser] || RubyParser).new
+    @parser = option[:parser].new
 
     warn "** flogging #{file}" if option[:verbose]
 
@@ -230,6 +236,7 @@ class Flog < MethodBasedSexpProcessor
     @mass                = {}
     @parser              = nil
     @threshold           = option[:threshold] || DEFAULT_THRESHOLD
+    option[:parser]    ||= Prism::Translation::RubyParser
     self.auto_shift_type = true
     self.reset
   end
