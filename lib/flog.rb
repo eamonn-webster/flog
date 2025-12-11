@@ -18,7 +18,7 @@ end
 # thoroughly test.
 
 class Flog < MethodBasedSexpProcessor
-  VERSION = "4.8.0" # :nodoc:
+  VERSION = "4.9.0" # :nodoc:
 
   ##
   # Cut off point where the report should stop unless --all given.
