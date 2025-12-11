@@ -25,7 +25,7 @@ Hoe.spec 'flog' do
 
   dependency "sexp_processor", "~> 4.8"
   dependency "prism",          "~> 1.5"
-  dependency "path_expander",  "~> 1.0"
+  dependency "path_expander",  "~> 2.0"
 
   dependency "minitest",       "~> 5.0", :dev
 end
