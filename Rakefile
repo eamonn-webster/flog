@@ -3,9 +3,7 @@
 require 'rubygems'
 require 'hoe'
 
-Hoe.add_include_dirs("../../ruby_parser/dev/lib",
-                     "../../RubyInline/dev/lib",
-                     "../../sexp_processor/dev/lib",
+Hoe.add_include_dirs("../../sexp_processor/dev/lib",
                      "../../ZenTest/dev/lib",
                      "../../path_expander/dev/lib",
                      "lib")
@@ -24,11 +22,8 @@ Hoe.spec 'flog' do
   license "MIT"
 
   dependency "sexp_processor", "~> 4.8"
-  dependency "ruby_parser",    ["~> 3.1", "> 3.1.0"]
-  dependency "prism",          "~> 1.5"
+  dependency "prism",          "~> 1.7"
   dependency "path_expander",  "~> 2.0"
-
-  dependency "minitest",       "~> 5.0", :dev
 end
 
 task :debug do
