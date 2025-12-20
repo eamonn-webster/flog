@@ -19,7 +19,7 @@ end
 
 class TestFlog < FlogTest
   def setup
-    @flog = Flog.new :parser => RubyParser
+    @flog = Flog.new parser: NotRubyParser
   end
 
   def test_add_to_score

@@ -9,7 +9,7 @@ end
 
 class TestFlogCLI < FlogTest
   def setup
-    @flog = FlogCLI.new :parser => RubyParser
+    @flog = FlogCLI.new parser: NotRubyParser
   end
 
   def test_cls_parse_options

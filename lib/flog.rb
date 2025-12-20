@@ -2,11 +2,9 @@ require "sexp_processor"
 require "prism"
 require "prism/translation/ruby_parser"
 require "timeout"
+require "racc" # for Racc::ParseError
 
-class Prism::Translation::RubyParser # compatibility layer
-  def process(ruby, file, timeout=nil) =
-    Timeout.timeout(timeout) { parse ruby, file }
-end
+NotRubyParser = Class.new Prism::Translation::RubyParser
 
 ##
 # Flog is a SexpProcessor that calculates a ABC (assignments,
@@ -236,7 +234,7 @@ class Flog < MethodBasedSexpProcessor
     @mass                = {}
     @parser              = nil
     @threshold           = option[:threshold] || DEFAULT_THRESHOLD
-    option[:parser]    ||= Prism::Translation::RubyParser
+    option[:parser]    ||= NotRubyParser
     self.auto_shift_type = true
     self.reset
   end
