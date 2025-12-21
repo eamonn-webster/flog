@@ -1,3 +1,12 @@
+=== 4.9.1 / 2025-12-20
+
+* 4 bug fixes:
+
+  * Bumped dependency to prism to get some upstreamed fixes.
+  * Dropped ruby_parser dependency (now considered soft dep for --legacy flag).
+  * Minor cleanup of some of the upstreamed fixes.
+  * Re-add ruby_parser dependency until I can get a patch into prism to loosen it up.
+
 === 4.9.0 / 2025-12-11
 
 * 2 minor enhancements:
