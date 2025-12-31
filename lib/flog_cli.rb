@@ -130,7 +130,7 @@ class FlogCLI
         option[:score] = true
       end
 
-      opts.on "--legacy" "Use RubyParser for parsing." do
+      opts.on "--legacy", "Use RubyParser for parsing." do
         require "ruby_parser"
         option[:parser] = RubyParser
       end
