@@ -1,3 +1,10 @@
+=== 4.9.2 / 2026-01-04
+
+* 2 bug fixes:
+
+  * Duplicate passed in options in case frozen.
+  * Oops! Fixed --legacy option definition.
+
 === 4.9.1 / 2025-12-20
 
 * 4 bug fixes:

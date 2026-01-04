@@ -16,7 +16,7 @@ NotRubyParser = Class.new Prism::Translation::RubyParser
 # thoroughly test.
 
 class Flog < MethodBasedSexpProcessor
-  VERSION = "4.9.1" # :nodoc:
+  VERSION = "4.9.2" # :nodoc:
 
   ##
   # Cut off point where the report should stop unless --all given.
