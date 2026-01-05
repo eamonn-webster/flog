@@ -1,3 +1,9 @@
+=== 4.9.3 / 2026-01-05
+
+* 1 bug fix:
+
+  * Fixed bug caused by last release duplicating (frozen) options hash. (nateberkopec)
+
 === 4.9.2 / 2026-01-04
 
 * 2 bug fixes:
