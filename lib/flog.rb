@@ -230,7 +230,7 @@ class Flog < MethodBasedSexpProcessor
 
   def initialize option = {}
     super()
-    @option              = option.dup
+    @option              = option = option.dup
     @mass                = {}
     @parser              = nil
     @threshold           = option[:threshold] || DEFAULT_THRESHOLD
