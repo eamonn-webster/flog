@@ -6,6 +6,15 @@ require "racc" # for Racc::ParseError
 
 NotRubyParser = Class.new Prism::Translation::RubyParser
 
+class Prism::Translation::RubyParser
+  module TweakIt
+    def visit_it_local_variable_read_node(node) # TODO: upstream
+      s(node, :lvar, :it)
+    end
+  end
+  Compiler.prepend TweakIt
+end
+
 ##
 # Flog is a SexpProcessor that calculates a ABC (assignments,
 # branches, conditionals) complexity metric with some ruby-aware

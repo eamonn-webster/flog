@@ -344,6 +344,17 @@ class TestFlog < FlogTest
     assert_process sexp, 2.326, :loop => 1.0, :branch => 1.1, :block_call => 1
   end
 
+  def test_process_iter__it
+    ruby = "blah { puts it }"
+    sexp = s(:iter,
+             s(:call, nil, :blah), 0,
+             s(:call, nil, :puts, s(:lvar, :it)))
+
+    assert_parse sexp, ruby
+
+    assert_process sexp, 2.326, blah: 1, block_call: 1, puts: 1.1
+  end
+
   def test_process_iter_dsl
     # task :blah do
     #   something
@@ -569,6 +580,10 @@ class TestFlog < FlogTest
     exp.keys.each do |k|
       assert_in_epsilon exp[k], act[k], 0.001, "key = #{k.inspect}"
     end
+  end
+
+  def assert_parse(sexp, ruby)
+    assert_equal sexp, NotRubyParser.new.process(ruby)
   end
 
   def assert_process sexp, score = -1, hash = {}
