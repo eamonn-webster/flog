@@ -19,7 +19,7 @@ end
 
 class TestFlog < FlogTest
   def setup
-    @flog = Flog.new parser: NotRubyParser
+    @flog = Flog.new
   end
 
   def test_add_to_score
@@ -582,8 +582,8 @@ class TestFlog < FlogTest
     end
   end
 
-  def assert_parse(sexp, ruby)
-    assert_equal sexp, NotRubyParser.new.process(ruby)
+  def assert_parse sexp, ruby
+    assert_equal sexp, Flog::NotRubyParser.new.process(ruby)
   end
 
   def assert_process sexp, score = -1, hash = {}

@@ -4,8 +4,6 @@ require "prism/translation/ruby_parser"
 require "timeout"
 require "racc" # for Racc::ParseError
 
-NotRubyParser = Class.new Prism::Translation::RubyParser
-
 class Prism::Translation::RubyParser
   module TweakIt
     def visit_it_local_variable_read_node(node) # TODO: upstream
@@ -27,12 +25,12 @@ end
 class Flog < MethodBasedSexpProcessor
   VERSION = "4.9.3" # :nodoc:
 
+  NotRubyParser = Class.new Prism::Translation::RubyParser # compatibility layer :nodoc:
+
   ##
   # Cut off point where the report should stop unless --all given.
 
   DEFAULT_THRESHOLD = 0.60
-
-  THRESHOLD = DEFAULT_THRESHOLD # :nodoc:
 
   ##
   # The scoring system hash. Maps node type to score.
