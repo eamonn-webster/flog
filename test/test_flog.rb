@@ -465,7 +465,7 @@ class TestFlog < FlogTest
   end
 
   def test_process_lit_complex
-    sexp = s(:lit, (0+1i))
+    sexp = eval 's(:lit, 0+1i)' # stupid emacs is borking on the complex
     assert_process sexp, 0.25
   end
 
