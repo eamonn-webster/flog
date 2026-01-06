@@ -38,7 +38,7 @@ task :debug do
   details = ENV["D"]
   continue = ENV["C"]
 
-  flog = FlogCLI.new :parser => RubyParser
+  flog = FlogCLI.new
 
   flog.option[:details] = true if details
   flog.option[:continue] = true if continue
