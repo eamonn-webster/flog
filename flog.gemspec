@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name = "flog"
-  s.version = "4.9.1"
+  s.version = "4.9.4"
 
   s.require_paths = ["lib"]
   s.authors = ["Ryan Davis"]
